@@ -74,8 +74,15 @@ namespace QuoteMachineCS
                 if ((int)m.WParam == HOTKEY_ID)
                 {
                     AddQuote();
+                    this.notifyIcon1.BalloonTipText = "Quote added.";
                 }
             }
+        }
+
+        private void exitXToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.notifyIcon1.Visible = false;
+            Application.Exit();
         }
     }
 }

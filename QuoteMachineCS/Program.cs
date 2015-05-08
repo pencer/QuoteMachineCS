@@ -14,8 +14,10 @@ namespace QuoteMachineCS
         [STAThread]
         static void Main()
         {
+            //Form1 f1 = new Form1();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            //Application.Run();
             Application.Run(new Form1());
         }
     }
