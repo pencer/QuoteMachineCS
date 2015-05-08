@@ -45,9 +45,14 @@ namespace QuoteMachineCS
                 string str = (string)data.GetData(DataFormats.Text);
                 string[] lines = str.Split('\n');
                 string res = "";
-                foreach (string line in lines)
+                bool first = true;
+                for (int i = 0; i < lines.Length; i++)
                 {
-                    res += "> " + line + "\n";
+                    string line = lines[i];
+                    if ((line == "") && (i == lines.Length - 1)) { break; }
+                    if (!first) { res += "\n"; }
+                    res += "> " + line;
+                    first = false;
                 }
                 Clipboard.SetDataObject(res, true);
             }
