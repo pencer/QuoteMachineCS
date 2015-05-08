@@ -63,6 +63,8 @@ namespace QuoteMachineCS
             // Register Hotkey
             RegisterHotKey(this.Handle, HOTKEY_ID, MOD_CONTROL, (int)Keys.F9);
 
+            // Hide in task tray
+            // http://csharp-cafe.info/c/c%E3%81%A7%E3%82%BF%E3%82%B9%E3%82%AF%E3%83%88%E3%83%AC%E3%82%A4%E5%B8%B8%E9%A7%90%E5%9E%8B%E3%82%A2%E3%83%97%E3%83%AA%E4%BD%9C%E6%88%90%E6%B3%952.html
             Hide();
         }
 
