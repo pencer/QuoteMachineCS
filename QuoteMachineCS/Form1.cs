@@ -57,6 +57,8 @@ namespace QuoteMachineCS
         {
             // Register Hotkey
             RegisterHotKey(this.Handle, HOTKEY_ID, MOD_CONTROL, (int)Keys.F9);
+
+            Hide();
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
