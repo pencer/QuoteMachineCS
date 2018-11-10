@@ -20,7 +20,8 @@ namespace QuoteMachineCS
         const int MOD_SHIFT   = 0x0004;
         const int WM_HOTKEY   = 0x0312;
 
-        const int HOTKEY_ID  = 0x0001;
+        const int HOTKEY_ID1  = 0x0001;
+        const int HOTKEY_ID2  = 0x0002;
 
         [DllImport("user32.dll")]
         extern static int RegisterHotKey(IntPtr HWnd, int ID, int MOD_KEY, int KEY);
@@ -35,6 +36,33 @@ namespace QuoteMachineCS
         private void button1_Click(object sender, EventArgs e)
         {
             AddQuote();
+        }
+
+        private void RemoveQuote()
+        {
+            IDataObject data = Clipboard.GetDataObject();
+            if (data.GetDataPresent(DataFormats.Text))
+            {
+                string str = (string)data.GetData(DataFormats.Text);
+                string[] lines = str.Split('\n');
+                string res = "";
+                bool first = true;
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    string line = lines[i];
+                    if ((line == "") && (i == lines.Length - 1)) { break; }
+                    if (line.StartsWith("> "))
+                    {
+                        if (!first) { res += "\n"; }
+                        res += line.Substring(2);
+                    }else
+                    {
+                        res += line;
+                    }
+                    first = false;
+                }
+                Clipboard.SetDataObject(res, true);
+            }
         }
 
         private void AddQuote()
@@ -61,7 +89,8 @@ namespace QuoteMachineCS
         private void Form1_Load(object sender, EventArgs e)
         {
             // Register Hotkey
-            RegisterHotKey(this.Handle, HOTKEY_ID, MOD_CONTROL, (int)Keys.F9);
+            RegisterHotKey(this.Handle, HOTKEY_ID1, MOD_CONTROL, (int)Keys.F9);
+            RegisterHotKey(this.Handle, HOTKEY_ID2, MOD_CONTROL, (int)Keys.F8);
 
             // Hide in task tray
             // http://csharp-cafe.info/c/c%E3%81%A7%E3%82%BF%E3%82%B9%E3%82%AF%E3%83%88%E3%83%AC%E3%82%A4%E5%B8%B8%E9%A7%90%E5%9E%8B%E3%82%A2%E3%83%97%E3%83%AA%E4%BD%9C%E6%88%90%E6%B3%952.html
@@ -71,7 +100,8 @@ namespace QuoteMachineCS
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             // Unregister Hotkey
-            UnregisterHotKey(this.Handle, HOTKEY_ID);
+            UnregisterHotKey(this.Handle, HOTKEY_ID1);
+            UnregisterHotKey(this.Handle, HOTKEY_ID2);
         }
 
         protected override void WndProc(ref Message m)
@@ -80,13 +110,19 @@ namespace QuoteMachineCS
 
             if (m.Msg == WM_HOTKEY)
             {
-                if ((int)m.WParam == HOTKEY_ID)
+                if ((int)m.WParam == HOTKEY_ID1)
                 {
                     AddQuote();
                     this.notifyIcon1.BalloonTipText = "Quote added.";
                 }
+                if ((int)m.WParam == HOTKEY_ID2)
+                {
+                    RemoveQuote();
+                    this.notifyIcon1.BalloonTipText = "Quote removed.";
+                }
             }
         }
+    
 
         private void exitXToolStripMenuItem_Click(object sender, EventArgs e)
         {
