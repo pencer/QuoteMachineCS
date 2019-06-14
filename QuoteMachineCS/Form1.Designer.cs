@@ -52,7 +52,7 @@
             this.notifyIcon1.BalloonTipText = "QuoteMachine";
             this.notifyIcon1.ContextMenuStrip = this.contextMenuStrip1;
             this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
-            this.notifyIcon1.Text = "QuoteMachine";
+            this.notifyIcon1.Text = "QuoteMachine\r\nCtrl+F8: Remove Quote\r\nCtrl+F9: Add Quote";
             this.notifyIcon1.Visible = true;
             // 
             // contextMenuStrip1
@@ -61,12 +61,12 @@
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitXToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(148, 32);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(138, 34);
             // 
             // exitXToolStripMenuItem
             // 
             this.exitXToolStripMenuItem.Name = "exitXToolStripMenuItem";
-            this.exitXToolStripMenuItem.Size = new System.Drawing.Size(147, 28);
+            this.exitXToolStripMenuItem.Size = new System.Drawing.Size(137, 30);
             this.exitXToolStripMenuItem.Text = "Exit (&X)";
             this.exitXToolStripMenuItem.Click += new System.EventHandler(this.exitXToolStripMenuItem_Click);
             // 
