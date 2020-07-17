@@ -4,6 +4,9 @@ The current hotkey settings:
 
     Ctrl+F8: Remove Quote
     Ctrl+F9: Add Quote
+    Ctrl+F10: Convert OneNote Path for Slack
+    Ctrl+F11: Convert File URI to UNC
+    Ctrl+F12: Convert UNC to File URI
 
 ex.) Add quote
 
