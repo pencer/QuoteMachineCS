@@ -26,6 +26,7 @@ namespace QuoteMachineCS
         const int HOTKEY_ID3  = 0x0003;
         const int HOTKEY_ID4  = 0x0004;
         const int HOTKEY_ID5  = 0x0005;
+        const int HOTKEY_ID6  = 0x0006;
 
         [DllImport("user32.dll")]
         extern static int RegisterHotKey(IntPtr HWnd, int ID, int MOD_KEY, int KEY);
@@ -189,6 +190,26 @@ namespace QuoteMachineCS
 
         }
 
+        private void OpenExplorer()
+        {
+            IDataObject data = Clipboard.GetDataObject();
+            if (data.GetDataPresent(DataFormats.Text))
+            {
+                string str = (string)data.GetData(DataFormats.Text);
+                string[] lines = str.Split('\n');
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    string line = lines[i];
+                    string path = line.Trim();
+                    if (System.IO.Directory.Exists(path))
+                    {
+                        System.Diagnostics.Process.Start("EXPLORER.EXE", path);
+                    }
+                    break;
+                }
+            }
+        }
+        
         private void Form1_Load(object sender, EventArgs e)
         {
             // Register Hotkey
@@ -197,6 +218,7 @@ namespace QuoteMachineCS
             RegisterHotKey(this.Handle, HOTKEY_ID3, MOD_CONTROL, (int)Keys.F10);
             RegisterHotKey(this.Handle, HOTKEY_ID4, MOD_CONTROL, (int)Keys.F11);
             RegisterHotKey(this.Handle, HOTKEY_ID5, MOD_CONTROL, (int)Keys.F12);
+            RegisterHotKey(this.Handle, HOTKEY_ID6, MOD_CONTROL, (int)Keys.F7);
 
             // Hide in task tray
             // http://csharp-cafe.info/c/c%E3%81%A7%E3%82%BF%E3%82%B9%E3%82%AF%E3%83%88%E3%83%AC%E3%82%A4%E5%B8%B8%E9%A7%90%E5%9E%8B%E3%82%A2%E3%83%97%E3%83%AA%E4%BD%9C%E6%88%90%E6%B3%952.html
@@ -211,6 +233,7 @@ namespace QuoteMachineCS
             UnregisterHotKey(this.Handle, HOTKEY_ID3);
             UnregisterHotKey(this.Handle, HOTKEY_ID4);
             UnregisterHotKey(this.Handle, HOTKEY_ID5);
+            UnregisterHotKey(this.Handle, HOTKEY_ID6);
         }
 
         protected override void WndProc(ref Message m)
@@ -222,27 +245,40 @@ namespace QuoteMachineCS
                 if ((int)m.WParam == HOTKEY_ID1)
                 {
                     AddQuote();
-                    this.notifyIcon1.BalloonTipText = "Quote added.";
+                    //this.notifyIcon1.BalloonTipText = "Quote added.";
+                    //this.notifyIcon1.BalloonTipTitle = "A";
+                    //this.notifyIcon1.Visible = true;
+                    //this.notifyIcon1.ShowBalloonTip(1000);
                 }
                 if ((int)m.WParam == HOTKEY_ID2)
                 {
                     RemoveQuote();
-                    this.notifyIcon1.BalloonTipText = "Quote removed.";
+                    //this.notifyIcon1.BalloonTipText = "Quote removed.";
+                    //this.notifyIcon1.BalloonTipTitle = "A";
+                    //this.notifyIcon1.Visible = true;
+                    //this.notifyIcon1.ShowBalloonTip(1000);
                 }
                 if ((int)m.WParam == HOTKEY_ID3)
                 {
                     ConvOneNotePathForSlack();
-                    this.notifyIcon1.BalloonTipText = "Converted OneNote Path for Slack.";
+                    //this.notifyIcon1.BalloonTipText = "Converted OneNote Path for Slack.";
+                    //this.notifyIcon1.ShowBalloonTip(1000);
                 }
                 if ((int)m.WParam == HOTKEY_ID4)
                 {
                     ConvFileURIToUNC();
-                    this.notifyIcon1.BalloonTipText = "Converted File URI to UNC.";
+                    //this.notifyIcon1.BalloonTipText = "Converted File URI to UNC.";
+                    //this.notifyIcon1.ShowBalloonTip(1000);
                 }
                 if ((int)m.WParam == HOTKEY_ID5)
                 {
                     ConvUNCToFileURI();
-                    this.notifyIcon1.BalloonTipText = "Converted UNC to File URI.";
+                    //this.notifyIcon1.BalloonTipText = "Converted UNC to File URI.";
+                    //this.notifyIcon1.ShowBalloonTip(1000);
+                }
+                if ((int)m.WParam == HOTKEY_ID6)
+                {
+                    OpenExplorer();
                 }
             }
         }
@@ -252,6 +288,11 @@ namespace QuoteMachineCS
         {
             this.notifyIcon1.Visible = false;
             Application.Exit();
+        }
+
+        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+
         }
     }
 }
