@@ -56,14 +56,30 @@ namespace QuoteMachineCS
                 {
                     string line = lines[i];
                     if ((line == "") && (i == lines.Length - 1)) { break; }
-                    if (line.StartsWith("> "))
+                    if (line.StartsWith(">"))
                     {
-                        if (!first) { res += "\n"; }
-                        res += line.Substring(2);
-                    }else
+                        if (line[1] == ' ')
+                        {
+                            res += line.Substring(2);
+                        }
+                        else if (line[1] == '>' || line[1] == '\r')
+                        {
+                            res += line.Substring(1);
+                        }
+                    }
+                    //if (line.StartsWith("> "))
+                    //{
+                    //    res += line.Substring(2);
+                    //}
+                    //else if (line == ">\r")
+                    //{
+                    //    res += line.Substring(1);
+                    //}
+                    else
                     {
                         res += line;
                     }
+                    res += "\n";
                     first = false;
                 }
                 Clipboard.SetDataObject(res, true);
