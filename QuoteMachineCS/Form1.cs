@@ -27,6 +27,7 @@ namespace QuoteMachineCS
         const int HOTKEY_ID4  = 0x0004;
         const int HOTKEY_ID5  = 0x0005;
         const int HOTKEY_ID6  = 0x0006;
+        const int HOTKEY_ID7  = 0x0007;
 
         [DllImport("user32.dll")]
         extern static int RegisterHotKey(IntPtr HWnd, int ID, int MOD_KEY, int KEY);
@@ -81,6 +82,28 @@ namespace QuoteMachineCS
                     }
                     res += "\n";
                     first = false;
+                }
+                Clipboard.SetDataObject(res, true);
+            }
+        }
+
+        private void RemoveEmptyLine()
+        {
+            IDataObject data = Clipboard.GetDataObject();
+            if (data.GetDataPresent(DataFormats.Text))
+            {
+                string str = (string)data.GetData(DataFormats.Text);
+                string[] lines = str.Split('\n');
+                string res = "";
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    string line = lines[i];
+                    if ((line == "") && (i == lines.Length - 1)) { break; }
+                    if (line[0] != '\r')
+                    {
+                        res += line;
+                        res += "\n";
+                    }
                 }
                 Clipboard.SetDataObject(res, true);
             }
@@ -235,6 +258,7 @@ namespace QuoteMachineCS
             RegisterHotKey(this.Handle, HOTKEY_ID4, MOD_CONTROL, (int)Keys.F11);
             RegisterHotKey(this.Handle, HOTKEY_ID5, MOD_CONTROL, (int)Keys.F12);
             RegisterHotKey(this.Handle, HOTKEY_ID6, MOD_CONTROL, (int)Keys.F7);
+            RegisterHotKey(this.Handle, HOTKEY_ID7, MOD_CONTROL, (int)Keys.F6);
 
             // Hide in task tray
             // http://csharp-cafe.info/c/c%E3%81%A7%E3%82%BF%E3%82%B9%E3%82%AF%E3%83%88%E3%83%AC%E3%82%A4%E5%B8%B8%E9%A7%90%E5%9E%8B%E3%82%A2%E3%83%97%E3%83%AA%E4%BD%9C%E6%88%90%E6%B3%952.html
@@ -250,6 +274,7 @@ namespace QuoteMachineCS
             UnregisterHotKey(this.Handle, HOTKEY_ID4);
             UnregisterHotKey(this.Handle, HOTKEY_ID5);
             UnregisterHotKey(this.Handle, HOTKEY_ID6);
+            UnregisterHotKey(this.Handle, HOTKEY_ID7);
         }
 
         protected override void WndProc(ref Message m)
@@ -295,6 +320,10 @@ namespace QuoteMachineCS
                 if ((int)m.WParam == HOTKEY_ID6)
                 {
                     OpenExplorer();
+                }
+                if ((int)m.WParam == HOTKEY_ID7)
+                {
+                    RemoveEmptyLine();
                 }
             }
         }
