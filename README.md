@@ -6,7 +6,7 @@ The current hotkey settings:
     Ctrl+F9: Add Quote
     Ctrl+F10: Add Quote in Markdown style (three back-quotes)
     Ctrl+F11: Add Quote in Markdown style then append to previously created contents by Ctrl+F10 or Ctrl+F11
-    Ctrl+F12: Convert UNC to File URI
+    Ctrl+F12: Check Clipboard format (debug purpose)
 
 ex.) Add quote
 

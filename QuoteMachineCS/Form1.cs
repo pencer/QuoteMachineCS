@@ -276,7 +276,22 @@ namespace QuoteMachineCS
                 }
             }
         }
-        
+        private void CheckClipboardFormats()
+        {
+            IDataObject data = Clipboard.GetDataObject();
+            string res = "";
+            foreach (string format in data.GetFormats())
+            {
+                res += format + ":\r\n";
+                if (format == "Text")
+                    res += (string)data.GetData(format);
+                if (format == "UnicodeText")
+                    res += (string)data.GetData(format);
+                res += "\r\n";
+            }
+            Clipboard.SetDataObject(res, true);
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
             // Register Hotkey
@@ -343,7 +358,8 @@ namespace QuoteMachineCS
                 }
                 if ((int)m.WParam == HOTKEY_ID5)
                 {
-                    ConvUNCToFileURI();
+                    CheckClipboardFormats();
+                    //ConvUNCToFileURI();
                     //this.notifyIcon1.BalloonTipText = "Converted UNC to File URI.";
                     //this.notifyIcon1.ShowBalloonTip(1000);
                 }
