@@ -29,6 +29,8 @@ namespace QuoteMachineCS
         const int HOTKEY_ID6  = 0x0006;
         const int HOTKEY_ID7  = 0x0007;
 
+        string m_history = "";
+
         [DllImport("user32.dll")]
         extern static int RegisterHotKey(IntPtr HWnd, int ID, int MOD_KEY, int KEY);
         [DllImport("user32.dll")]
@@ -52,7 +54,6 @@ namespace QuoteMachineCS
                 string str = (string)data.GetData(DataFormats.Text);
                 string[] lines = str.Split('\n');
                 string res = "";
-                bool first = true;
                 for (int i = 0; i < lines.Length; i++)
                 {
                     string line = lines[i];
@@ -81,7 +82,6 @@ namespace QuoteMachineCS
                         res += line;
                     }
                     res += "\n";
-                    first = false;
                 }
                 Clipboard.SetDataObject(res, true);
             }
@@ -108,7 +108,7 @@ namespace QuoteMachineCS
                 Clipboard.SetDataObject(res, true);
             }
         }
-        private void AddMarkdownQuote()
+        private void AddMarkdownQuote(bool append = false)
         {
             // Add three back-quote before and after the contents
             IDataObject data = Clipboard.GetDataObject();
@@ -117,8 +117,11 @@ namespace QuoteMachineCS
                 string str = (string)data.GetData(DataFormats.Text);
                 string[] lines = str.Split('\n');
                 string res = "";
-                bool first = true;
-                res = "```\n";
+                if (append)
+                {
+                    res = m_history + "\r\n";
+                }
+                res += "```\r\n";
                 for (int i = 0; i < lines.Length; i++)
                 {
                     string line = lines[i];
@@ -129,8 +132,9 @@ namespace QuoteMachineCS
                         res += "\n";
                     }
                 }
-                res += "```\n";
+                res += "```\r\n";
                 Clipboard.SetDataObject(res, true);
+                m_history = res; // Set as history
             }
         }
         private void AddQuote()
@@ -332,7 +336,8 @@ namespace QuoteMachineCS
                 }
                 if ((int)m.WParam == HOTKEY_ID4)
                 {
-                    ConvFileURIToUNC();
+                    AddMarkdownQuote(true);
+                    //ConvFileURIToUNC();
                     //this.notifyIcon1.BalloonTipText = "Converted File URI to UNC.";
                     //this.notifyIcon1.ShowBalloonTip(1000);
                 }
