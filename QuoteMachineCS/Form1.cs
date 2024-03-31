@@ -108,7 +108,31 @@ namespace QuoteMachineCS
                 Clipboard.SetDataObject(res, true);
             }
         }
-
+        private void AddMarkdownQuote()
+        {
+            // Add three back-quote before and after the contents
+            IDataObject data = Clipboard.GetDataObject();
+            if (data.GetDataPresent(DataFormats.Text))
+            {
+                string str = (string)data.GetData(DataFormats.Text);
+                string[] lines = str.Split('\n');
+                string res = "";
+                bool first = true;
+                res = "```\n";
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    string line = lines[i];
+                    if ((line == "") && (i == lines.Length - 1)) { break; }
+                    if (line[0] != '\r')
+                    {
+                        res += line;
+                        res += "\n";
+                    }
+                }
+                res += "```\n";
+                Clipboard.SetDataObject(res, true);
+            }
+        }
         private void AddQuote()
         {
             IDataObject data = Clipboard.GetDataObject();
@@ -301,7 +325,8 @@ namespace QuoteMachineCS
                 }
                 if ((int)m.WParam == HOTKEY_ID3)
                 {
-                    ConvOneNotePathForSlack();
+                    AddMarkdownQuote();
+                    //ConvOneNotePathForSlack();
                     //this.notifyIcon1.BalloonTipText = "Converted OneNote Path for Slack.";
                     //this.notifyIcon1.ShowBalloonTip(1000);
                 }
