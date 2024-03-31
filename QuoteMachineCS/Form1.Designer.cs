@@ -52,7 +52,7 @@
             this.notifyIcon1.BalloonTipText = "QuoteMachine";
             this.notifyIcon1.ContextMenuStrip = this.contextMenuStrip1;
             this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
-            this.notifyIcon1.Text = "QuoteMachine\r\nCtrl+F8: Remove Quote\r\nCtrl+F9: Add Quote";
+            this.notifyIcon1.Text = "QuoteMachine\r\nCtl+F8/9: Rmv/Add\r\nCtl+F10/11: Markdown Add/Apnd";
             this.notifyIcon1.Visible = true;
             this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
             // 
@@ -62,12 +62,12 @@
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitXToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(138, 34);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(138, 36);
             // 
             // exitXToolStripMenuItem
             // 
             this.exitXToolStripMenuItem.Name = "exitXToolStripMenuItem";
-            this.exitXToolStripMenuItem.Size = new System.Drawing.Size(137, 30);
+            this.exitXToolStripMenuItem.Size = new System.Drawing.Size(137, 32);
             this.exitXToolStripMenuItem.Text = "Exit (&X)";
             this.exitXToolStripMenuItem.Click += new System.EventHandler(this.exitXToolStripMenuItem_Click);
             // 
