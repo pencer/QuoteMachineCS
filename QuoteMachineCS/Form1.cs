@@ -19,6 +19,7 @@ namespace QuoteMachineCS
         const int MOD_ALT     = 0x0001;
         const int MOD_CONTROL = 0x0002;
         const int MOD_SHIFT   = 0x0004;
+        const int MOD_NOREPEAT= 0x4000;
         const int WM_HOTKEY   = 0x0312;
 
         const int HOTKEY_ID1  = 0x0001;
@@ -28,6 +29,8 @@ namespace QuoteMachineCS
         const int HOTKEY_ID5  = 0x0005;
         const int HOTKEY_ID6  = 0x0006;
         const int HOTKEY_ID7  = 0x0007;
+        const int HOTKEY_ID3S = 0x0018;
+        const int HOTKEY_ID4S = 0x0019;
 
         string m_history = "";
 
@@ -108,7 +111,7 @@ namespace QuoteMachineCS
                 Clipboard.SetDataObject(res, true);
             }
         }
-        private void AddMarkdownQuote(bool append = false)
+        private void AddMarkdownQuote(bool removeemptyline, bool append = false)
         {
             // Add three back-quote before and after the contents
             IDataObject data = Clipboard.GetDataObject();
@@ -122,14 +125,27 @@ namespace QuoteMachineCS
                     res = m_history + "\r\n";
                 }
                 res += "```\r\n";
+                string prevline = "\r\n";
                 for (int i = 0; i < lines.Length; i++)
                 {
                     string line = lines[i];
                     if ((line == "") && (i == lines.Length - 1)) { break; }
-                    if (line[0] != '\r')
+                    if (removeemptyline)
                     {
-                        res += line;
-                        res += "\n";
+                        if (line[0] != '\r')
+                        {
+                            res += line;
+                            res += "\n";
+                        }
+                    }
+                    else
+                    {
+                        if (line[0] != '\r' || prevline[0] != '\r')
+                        {
+                            res += line;
+                            res += "\n";
+                        }
+                        prevline = line;
                     }
                 }
                 res += "```\r\n";
@@ -298,7 +314,9 @@ namespace QuoteMachineCS
             RegisterHotKey(this.Handle, HOTKEY_ID1, MOD_CONTROL, (int)Keys.F9);
             RegisterHotKey(this.Handle, HOTKEY_ID2, MOD_CONTROL, (int)Keys.F8);
             RegisterHotKey(this.Handle, HOTKEY_ID3, MOD_CONTROL, (int)Keys.F10);
+            RegisterHotKey(this.Handle, HOTKEY_ID3S, MOD_CONTROL | MOD_SHIFT, (int)Keys.F10);
             RegisterHotKey(this.Handle, HOTKEY_ID4, MOD_CONTROL, (int)Keys.F11);
+            RegisterHotKey(this.Handle, HOTKEY_ID4S, MOD_CONTROL | MOD_SHIFT, (int)Keys.F11);
             RegisterHotKey(this.Handle, HOTKEY_ID5, MOD_CONTROL, (int)Keys.F12);
             RegisterHotKey(this.Handle, HOTKEY_ID6, MOD_CONTROL, (int)Keys.F7);
             RegisterHotKey(this.Handle, HOTKEY_ID7, MOD_CONTROL, (int)Keys.F6);
@@ -314,7 +332,9 @@ namespace QuoteMachineCS
             UnregisterHotKey(this.Handle, HOTKEY_ID1);
             UnregisterHotKey(this.Handle, HOTKEY_ID2);
             UnregisterHotKey(this.Handle, HOTKEY_ID3);
+            UnregisterHotKey(this.Handle, HOTKEY_ID3S);
             UnregisterHotKey(this.Handle, HOTKEY_ID4);
+            UnregisterHotKey(this.Handle, HOTKEY_ID4S);
             UnregisterHotKey(this.Handle, HOTKEY_ID5);
             UnregisterHotKey(this.Handle, HOTKEY_ID6);
             UnregisterHotKey(this.Handle, HOTKEY_ID7);
@@ -344,17 +364,25 @@ namespace QuoteMachineCS
                 }
                 if ((int)m.WParam == HOTKEY_ID3)
                 {
-                    AddMarkdownQuote();
+                    AddMarkdownQuote(false);
                     //ConvOneNotePathForSlack();
                     //this.notifyIcon1.BalloonTipText = "Converted OneNote Path for Slack.";
                     //this.notifyIcon1.ShowBalloonTip(1000);
                 }
-                if ((int)m.WParam == HOTKEY_ID4)
+                if ((int)m.WParam == HOTKEY_ID3S)
                 {
                     AddMarkdownQuote(true);
+                }
+                if ((int)m.WParam == HOTKEY_ID4)
+                {
+                    AddMarkdownQuote(false, true);
                     //ConvFileURIToUNC();
                     //this.notifyIcon1.BalloonTipText = "Converted File URI to UNC.";
                     //this.notifyIcon1.ShowBalloonTip(1000);
+                }
+                if ((int)m.WParam == HOTKEY_ID4S)
+                {
+                    AddMarkdownQuote(true, true);
                 }
                 if ((int)m.WParam == HOTKEY_ID5)
                 {
