@@ -111,6 +111,57 @@ namespace QuoteMachineCS
                 Clipboard.SetDataObject(res, true);
             }
         }
+
+        private void JoinLines()
+        {
+            IDataObject data = Clipboard.GetDataObject();
+            if (data.GetDataPresent(DataFormats.Text))
+            {
+                string str = (string)data.GetData(DataFormats.Text);
+                string[] lines = str.Split('\n');
+                string res = "";
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    string line = lines[i];
+                    if ((line == "") && (i == lines.Length - 1)) { break; }
+                    if (line[0] != '\r')
+                    {
+                        if (res.Length > 0)
+                        {
+                            // previous line exists
+                            res += ' ';
+                        }
+                        // find the first non-space character
+                        int len = line.Length;
+                        int startpos = 0;
+                        while (startpos < len - 1)
+                        {
+                            if (line[startpos] != ' ' && line[startpos] != '\t')
+                            {
+                                break;
+                            }
+                            startpos++;
+                        }
+                        // find the last non-space character
+                        int endpos = len - 1;
+                        while (endpos > 1)
+                        {
+                            if (line[endpos] != '\r' && line[endpos] != ' ' && line[endpos] != '\t')
+                            {
+                                break;
+                            }
+                            endpos--;
+                        }
+                        if (startpos <= endpos)
+                        {
+                            res += line.Substring(startpos, endpos - startpos + 1);
+                        }
+                    }
+                }
+                Clipboard.SetDataObject(res, true);
+            }
+        }
+
         private void AddMarkdownQuote(bool removeemptyline, bool append = false)
         {
             // Add three back-quote before and after the contents
@@ -344,6 +395,13 @@ namespace QuoteMachineCS
         {
             base.WndProc(ref m);
 
+            // Ctrl+ F6: HOTKEY_ID7: RemoveEmptyLine
+            // Ctrl+ F7: HOTKEY_ID6: JoinLines
+            // Ctrl+ F8: HOTKEY_ID2: RemoveQuote
+            // Ctrl+ F9: HOTKEY_ID1: AddQuote
+            // Ctrl+F10: HOTKEY_ID3: AddMarkdownQuote
+            // Ctrl+F11: HOTKEY_ID4: AddMarkdownQuote
+            // Ctrl+F12: HOTKEY_ID5: CheckClipboardFormats
             if (m.Msg == WM_HOTKEY)
             {
                 if ((int)m.WParam == HOTKEY_ID1)
@@ -393,7 +451,8 @@ namespace QuoteMachineCS
                 }
                 if ((int)m.WParam == HOTKEY_ID6)
                 {
-                    OpenExplorer();
+                    JoinLines();
+                    //OpenExplorer();
                 }
                 if ((int)m.WParam == HOTKEY_ID7)
                 {
